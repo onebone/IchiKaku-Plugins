@@ -1,0 +1,9 @@
+default-language: en
+m_version: 1
+
+#(EN) ENGLISH
+en-default-prefix: "[PocketClan]"
+en-plugin-loaded: "Plugin was activitied"
+en-PocketClan-NotEnoughMoney: "You don't have enough money"
+en-PocketClan-ClanMade: "Clan was made"
+en-PocketClan-ClanJoin: "Succesfully joined in "
