@@ -7,13 +7,13 @@ api: [1.4.1]
 commands:
  clan:
   usage: /clan [make/join/leave/list]
-  permission: pocketclan.command.clan
-  description: false
+  permission: pocketclan.command
+  description: true
  clanManage :
   usage: /clanManage [delete/ban/admin]
-  permission: pocketclan.command.management
-  description: false
+  permission: pocketclan.command
+  description: true
 
 permissions:
-   pocketclan.command.*:
+   pocketclan.command:
     default: true
