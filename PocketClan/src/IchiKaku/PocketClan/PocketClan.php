@@ -34,7 +34,7 @@ class PocketClan extends PluginBase implements Listener {
         $this->messagesUpdate ( "messages.yml" );
         $this->messages = (new Config ( $this->getDataFolder () . "messages.yml", Config::YAML ))->getAll ();
         $this->loadData();
-        $this->getLogger()->info(TextFormat::GOLD.$this->get("plugin-loaded"));
+        $this->getLogger()->info(TextFormat::GOLD."[PocketClan]Plugin was activitied");
     }
     public function onDisable() {
         $this->saveData();
@@ -57,7 +57,7 @@ class PocketClan extends PluginBase implements Listener {
             case "clan":
                 switch($args[0]) {
                     case "make":
-                        if($this->api->myMoney($p) < 30000) $sp->sendMessage($this->get("PocketClan-NotEnoughMoney"));
+                        if($this->api->myMoney($p) < 30000) $sp->sendMessage("[PocketClan] You don't have enough money");
                         else {
                             $this->api->reduceMoney($p, 30000);
                             $this->clanlist[$args[2]] = $args[2];
@@ -65,7 +65,7 @@ class PocketClan extends PluginBase implements Listener {
                             $this->clandata[$args[2]]["list"] = array();
                             array_push($this->clandata[$args[2]]["list"], $p);
                             $this->playerclan[$p] = $args[2];
-                            $sp->sendMessage($this->get("PocketClan-ClanMade") . " [" . $args[2] . "]");
+                            $sp->sendMessage("[PocketClan] Clan was made " . " [" . $args[2] . "]");
                         }
                         return true;
                     case "join" :
@@ -74,7 +74,7 @@ class PocketClan extends PluginBase implements Listener {
                                 $this->clandata[$args[2]][$p] = "user";
                                 array_push($this->clandata[$args[2]]["list"], $p);
                                 $this->playerclan[$p] = $args[2];
-                                $sp->sendMessage($this->get("PocketClan-ClanJoin") . "\"" . $args[2] . "\"");
+                                $sp->sendMessage("[PocketClan] Succesfully joined in  " . "\"" . $args[2] . "\"");
                             }
                         }
                         return true;
@@ -96,7 +96,7 @@ class PocketClan extends PluginBase implements Listener {
                                 $this->playerclan[$p] = "none";
                                 array_replace($this->clandata[$args[2]]["list"], $p);
                             } else {
-                                $sp->sendMessage($this->get("PocketClan-cantfindclan"));
+                                $sp->sendMessage("[PocketClan] Clan not founded");
                             }
                         } else {
                             return false;
