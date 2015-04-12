@@ -108,6 +108,7 @@ class PocketClan extends PluginBase implements Listener {
                                 $sp->sendMessage("[PocketClan] Clan not founded");
                             }
                         } else return false;
+                    break;
                     default:
                         $sp->sendMessage("[PocketClan] Usage: /clan [make/join/leave/list");
                 }
