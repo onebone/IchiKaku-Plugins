@@ -59,6 +59,7 @@ class PocketClan extends PluginBase implements Listener {
                     case "make":
                         if(!isset($args[1])) {
                             $sp->sendMessage("[PocketClan] Please Input ClanName");
+                            return false;
                         }
                         if($this->api->myMoney($p) < 30000) $sp->sendMessage("[PocketClan] You don't have enough money");
                         else {
@@ -74,6 +75,7 @@ class PocketClan extends PluginBase implements Listener {
                     case "join" :
                         if(!isset($args[1])) {
                             $sp->sendMessage("[PocketClan] Please Input ClanName");
+                            return false;
                         }
                         foreach($this->clanlist as $cl) {
                             if ($cl == $args[2]) {
@@ -98,6 +100,7 @@ class PocketClan extends PluginBase implements Listener {
                     case "leave" :
                         if(!isset($args[1])) {
                             $sp->sendMessage("[PocketClan] Please Input ClanName");
+                            return false;
                         }
                         if(isset($args[2])) {
                             if($this->getClan($p) == $args[2]) {
