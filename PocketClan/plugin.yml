@@ -16,4 +16,4 @@ commands:
 
 permissions:
    pocketclan.command.*:
-    default: USER
+    default: true
