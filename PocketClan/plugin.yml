@@ -6,7 +6,7 @@ api: [1.4.1]
 
 commands:
  clan:
-  usage: /clan [make/join/list]
+  usage: /clan [make/join/leave/list]
   permission: pocketclan.command.clan
   description: false
  clanManage :

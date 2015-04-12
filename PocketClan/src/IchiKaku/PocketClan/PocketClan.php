@@ -63,7 +63,7 @@ class PocketClan extends PluginBase implements Listener {
                             $this->clanlist[$args[2]] = $args[2];
                             $this->clandata[$args[2]][$p] = "admin";
                             $this->clandata[$args[2]]["list"] = array();
-                            array_push($this->clandata[$args[2]]["list"] = array(), $p);
+                            array_push($this->clandata[$args[2]]["list"], $p);
                             $this->playerclan[$p] = $args[2];
                             $sp->sendMessage($this->get("PocketClan-ClanMade") . " [" . $args[2] . "]");
                         }
@@ -72,7 +72,7 @@ class PocketClan extends PluginBase implements Listener {
                         foreach($this->clanlist as $cl) {
                             if ($cl == $args[2]) {
                                 $this->clandata[$args[2]][$p] = "user";
-                                array_push($this->clandata[$args[2]]["list"] = array(), $p);
+                                array_push($this->clandata[$args[2]]["list"], $p);
                                 $this->playerclan[$p] = $args[2];
                                 $sp->sendMessage($this->get("PocketClan-ClanJoin") . "\"" . $args[2] . "\"");
                             }
@@ -88,6 +88,20 @@ class PocketClan extends PluginBase implements Listener {
                             foreach($this->clanlist as $cl) $list .= $cl.",";
                             $sp->sendMessage("[PocketClan]" . $list);
                         }
+                        return true;
+                    case "leave" :
+                        if(isset($args[2])) {
+                            if($p.getClan() == $args[2]) {
+                                $this->clandata[$args][$p]="NotInClan";
+                                $this->playerclan[$p] = "none";
+                                array_replace($this->clandata[$args[2]]["list"], $p);
+                            } else {
+                                $p->sendMessage($this->get("PocketClan-cantfindclan"));
+                            }
+                        } else {
+                            return false;
+                        }
+
                         return true;
                 }
                 break;
@@ -110,6 +124,7 @@ class PocketClan extends PluginBase implements Listener {
         return $this->playerclan[$player];
     }
     public function get($var) {
+        //method used by hmmm
         return $this->messages [$this->messages ["default-language"] . "-" . $var];
     }
     public function loadData() {
@@ -129,9 +144,11 @@ class PocketClan extends PluginBase implements Listener {
         $this->player_clan->save();
     }
     public function initializeYML($path, $array) {
+        //method used by hmmm
         return new Config ( $this->getDataFolder () . $path, Config::YAML, $array );
     }
     public function messagesUpdate($targetYmlName) {
+        //method used by hmmm
         $targetYml = (new Config ( $this->getDataFolder () . $targetYmlName, Config::YAML ))->getAll ();
         if (! isset ( $targetYml ["m_version"] )) {
             $this->saveResource ( $targetYmlName, true );
