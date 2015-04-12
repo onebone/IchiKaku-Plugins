@@ -91,12 +91,12 @@ class PocketClan extends PluginBase implements Listener {
                         return true;
                     case "leave" :
                         if(isset($args[2])) {
-                            if($p.getClan() == $args[2]) {
-                                $this->clandata[$args][$p]="NotInClan";
+                            if($this->getClan($p) == $args[2]) {
+                                $this->clandata[$args[2]][$p]="NotInClan";
                                 $this->playerclan[$p] = "none";
                                 array_replace($this->clandata[$args[2]]["list"], $p);
                             } else {
-                                $p->sendMessage($this->get("PocketClan-cantfindclan"));
+                                $sp->sendMessage($this->get("PocketClan-cantfindclan"));
                             }
                         } else {
                             return false;
