@@ -1,6 +1,6 @@
 name: PocketClan
 main: IchiKaku\PocketClan\PocketClan
-version: 0.1-alpha
+version: 0.2-alpha
 author: IchiKaku
 api: [1.4.1]
 
