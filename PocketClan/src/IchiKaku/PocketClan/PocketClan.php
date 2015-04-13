@@ -24,7 +24,7 @@ class PocketClan extends PluginBase implements Listener {
         if ($this->getServer ()->getPluginManager ()->getPlugin ( "EconomyAPI" ) != null)
             $this->api = EconomyAPI::getInstance ();
         else {
-            $this->getLogger()->error("'EconomyAPI' 플러그인이 없습니다.");
+            $this->getLogger()->error("'EconomyAPI' plugin was not activitied!");
             $this->getServer()->getPluginManager()->disablePlugin($this);
         }
         $this->loadData();
@@ -49,6 +49,10 @@ class PocketClan extends PluginBase implements Listener {
         $p = $sp->getName();
         switch($command) {
             case "clan":
+                if(!isset($args[0])) {
+                    $sp->sendMessage("[PocketClan] Usage: /clan [make/join/leave/list");
+                    break;
+                }
                 switch($args[0]) {
                     case "make":
                         if(!isset($args[1])) {
@@ -69,6 +73,10 @@ class PocketClan extends PluginBase implements Listener {
                     case "join" :
                         if(!isset($args[1])) {
                             $sp->sendMessage("[PocketClan] Please Input ClanName");
+                            break;
+                        }
+                        if($this->getClan($p) == $args[1]) {
+                            $sp->sendMessage("You are already in Clan [".$args[1]."]");
                             break;
                         }
                         foreach($this->clanlist as $cl) {
@@ -124,12 +132,12 @@ class PocketClan extends PluginBase implements Listener {
                 }
                 break;
             default :
-                return false;
+                $sp->sendMessage("[PocketClan] Usage: /clanManage [delete/ban/admin]");
         }
         return true;
     }
     public function getClan($player) {
-        return $this->playerclan[$player];
+        return isset($this->playerclan[$player]) ? $this->playerclan[$player] : "none";
     }
     public function loadData() {
         $this->clan_list = $this->initializeYML ( "clan_list.yml", [ ] );
