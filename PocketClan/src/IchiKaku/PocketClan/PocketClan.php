@@ -39,13 +39,6 @@ class PocketClan extends PluginBase implements Listener {
         $e->getPlayer()->setRemoveFormat ( false );
         $this->getServer ()->broadcastMessage ("[".$this->getClan($e->getPlayer()->getName())."] " . $e->getPlayer()->getName() . " : " . $e->getMessage () );
     }
-    /**
-     * @param CommandSender $sp
-     * @param Command $command
-     * @param string $label
-     * @param array $args
-     * @return bool
-     */
     public function onCommand(CommandSender $sp, Command $command, $label, array $args){
         $p = $sp->getName();
         if($sp instanceof Player)
@@ -125,12 +118,15 @@ class PocketClan extends PluginBase implements Listener {
              case "clanManage" :
                  switch($args[0]) {
                      case "delete" :
+                         //TODO: 오피가 클랜 삭제시 클랜이 없을 경우 예외처리
                          if($this->clandata[$this->getClan($p)][$p] == "admin") {
                              foreach($this->clandata[$this->getClan($p)]["list"] as $pl)
                                  $this->playerclan[$pl] = "none";
                              unset($this->clanlist[array_search($this->getClan($p),$this->clanlist)]);
                              unset($this->clandata[array_search($this->getClan($p),$this->clandata)]);
-                         } else if($sp->isOP()) {
+                         }
+                         else if(!isset($args[1])) $sp->sendMessage("[PocketClan] Usage: /clan delete <name>");
+                         else if($sp->isOP()) {
                              foreach($this->clandata[$args[1]]["list"] as $pl)
                                  $this->playerclan[$pl] = "none";
                              unset($this->clanlist[array_search($args[1],$this->clanlist)]);
@@ -138,12 +134,19 @@ class PocketClan extends PluginBase implements Listener {
                          }
                          return true;
                      case "ban" :
+                         //TODO: 플레이어가 없을 경우에 예외처리
+                         if(!isset($args[1])) $sp->sendMessage("[PocketClan] Usage: /clan ban <name>");
                          if($this->clandata[$this->getClan($p)][$p] == ("admin"||"op")) {
                              $this->playerclan[$args[1]] = "none";
-                             unset($this->clandata[$this->getClan($p)]["list"][$args[1]]);
+                             unset($this->clandata[$this->getClan($p)]["list"][array_search($p, $this->clandata[$this->getClan($p)]["list"])]);
                          }
                          return true;
                      case "admin" :
+                         //TODO: 플레이어가 없을 경우에 예외처리
+                         if(!isset($args[1])) $sp->sendMessage("[PocketClan] Usage: /clan admin <name>");
+                         if($this->clandata[$this->getClan($p)][$p] == ("admin"||"op")) {
+                             $this->clandata[$this->getClan($p)]["list"][array_search($p, $this->clandata[$this->getClan($p)]["list"])] = "op";
+                         }
                          return true;
                      default: $sp->sendMessage("[PocketClan] Usage: /clanManage [delete/ban/admin]");
                  }
