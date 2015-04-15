@@ -10,6 +10,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\Command;
 use pocketmine\utils\Config;
 use onebone\economyapi\EconomyAPI;
+use pocketmine\Player;
 
 
 class PocketClan extends PluginBase implements Listener {
@@ -28,7 +29,7 @@ class PocketClan extends PluginBase implements Listener {
             $this->getServer()->getPluginManager()->disablePlugin($this);
         }
         $this->loadData();
-        $this->getLogger()->info(TextFormat::GOLD."[PocketClan]Plugin was activitied");
+        $this->getLogger()->info(TextFormat::GOLD."[PocketClan] Plugin was activitied");
     }
     public function onDisable() {
         $this->saveData();
@@ -36,7 +37,7 @@ class PocketClan extends PluginBase implements Listener {
     public function onChat(PlayerChatEvent $e) {
         $e->setCancelled(true);
         $e->getPlayer()->setRemoveFormat ( false );
-        $this->getServer ()->broadcastMessage ("[".$this->getClan($e->getPlayer()->getName())."]" . $e->getPlayer()->getName() . " : " . $e->getMessage () );
+        $this->getServer ()->broadcastMessage ("[".$this->getClan($e->getPlayer()->getName())."] " . $e->getPlayer()->getName() . " : " . $e->getMessage () );
     }
     /**
      * @param CommandSender $sp
@@ -47,92 +48,99 @@ class PocketClan extends PluginBase implements Listener {
      */
     public function onCommand(CommandSender $sp, Command $command, $label, array $args){
         $p = $sp->getName();
-        switch($command) {
-            case "clan":
-                if(!isset($args[0])) {
-                    $sp->sendMessage("[PocketClan] Usage: /clan [make/join/leave/list");
-                    break;
-                }
-                switch($args[0]) {
-                    case "make":
-                        if(!isset($args[1])) {
-                            $sp->sendMessage("[PocketClan] Please Input ClanName");
-                            break;
-                        }
-                        if($this->api->myMoney($p) < 30000) $sp->sendMessage("[PocketClan] You don't have enough money");
-                        else if(isset($args[1])) {
-                            $this->api->reduceMoney($p, 30000);
-                            $this->clanlist[$args[1]] = $args[1];
-                            $this->clandata[$args[1]][$p] = "admin";
-                            $this->clandata[$args[1]]["list"] = array();
-                            array_push($this->clandata[$args[1]]["list"], $p);
-                            $this->playerclan[$p] = $args[1];
-                            $sp->sendMessage("[PocketClan] Clan was made " . " [" . $args[1] . "]");
-                        }
-                        return true;
-                    case "join" :
-                        if(!isset($args[1])) {
-                            $sp->sendMessage("[PocketClan] Please Input ClanName");
-                            break;
-                        }
-                        if($this->getClan($p) == $args[1]) {
-                            $sp->sendMessage("You are already in Clan [".$args[1]."]");
-                            break;
-                        }
-                        foreach($this->clanlist as $cl) {
-                            if ($cl == $args[1]) {
-                                $this->clandata[$args[1]][$p] = "user";
-                                array_push($this->clandata[$args[1]]["list"], $p);
-                                $this->playerclan[$p] = $args[1];
-                                $sp->sendMessage("[PocketClan] Succesfully joined in  " . "\"" . $args[1] . "\"");
-                                break;
-                            } else $sp->sendMessage("[PocketClan] Can't find Clan");
-                        }
-                        return true;
-                    case "list" :
-                        if(isset($args[1])) {
-                            $list = "";
-                            foreach($this->clandata[$args[1]]["list"] as $cl) $list .= $cl.",";
-                            $sp->sendMessage("[PocketClan]" . $args[1] . " people : " . sizeof($this->clandata[$args[1]]["list"]) . " list : " . $list);
-                        } else {
-                            $list = "";
-                            foreach($this->clanlist as $cl) $list .= $cl.",";
-                            $sp->sendMessage("[PocketClan]" . $list);
-                        }
-                        return true;
-                    case "leave" :
-                        if(!isset($args[1])) {
-                            $sp->sendMessage("[PocketClan] Please Input ClanName");
-                            break;
-                        }
-                        if(isset($args[1])) {
-                            if($this->getClan($p) == $args[1]) {
-                                $this->clandata[$args[1]][$p]="NotInClan";
-                                $this->playerclan[$p] = "none";
-                                unset($this->clandata[$args[1]]["list"][array_search($p,$this->clandata[$args[1]]["list"])]);
-                                $sp->sendMessage("Succesfully leaved Clan [".$args[1]."]");
-                            } else {
-                                $sp->sendMessage("[PocketClan] Clan not founded");
-                            }
-                        } else return false;
-                    break;
-                    default:
-                        $sp->sendMessage("[PocketClan] Usage: /clan [make/join/leave/list");
-                }
-                break;
-            case "clanManage" :
-                switch($args[0]) {
-                    case "delete" :
-                        return true;
-                    case "ban" :
-                        return true;
-                    case "admin" :
-                        return true;
-                    default: $sp->sendMessage("[PocketClan] Usage: /clanManage [delete/ban/admin]");
-                }
-                break;
-            default :
-                $sp->sendMessage("[PocketClan] Usage: /clanManage [delete/ban/admin]");
+        if($sp instanceof Player)
+            switch($command) {
+             case "clan":
+                  if(!isset($args[0])) {
+                      $sp->sendMessage("[PocketClan] Usage: /clan [make/join/leave/list");
+                      break;
+                  }
+                 switch($args[0]) {
+                     case "make":
+                         if(!isset($args[1])) {
+                             $sp->sendMessage("[PocketClan] Please Input ClanName");
+                             break;
+                         }
+                         if($this->api->myMoney($p) < 30000) $sp->sendMessage("[PocketClan] You don't have enough money");
+                         else if(isset($args[1])) {
+                             $this->api->reduceMoney($p, 30000);
+                             $this->clanlist[$args[1]] = $args[1];
+                             $this->clandata[$args[1]][$p] = "admin";
+                             $this->clandata[$args[1]]["list"] = array();
+                             array_push($this->clandata[$args[1]]["list"], $p);
+                             $this->playerclan[$p] = $args[1];
+                             $sp->sendMessage("[PocketClan] Clan was made " . " [" . $args[1] . "]");
+                         }
+                         return true;
+                     case "join" :
+                         if(!isset($args[1])) {
+                             $sp->sendMessage("[PocketClan] Please Input ClanName");
+                             break;
+                         }
+                         if($this->getClan($p) == $args[1]) {
+                             $sp->sendMessage("You are already in Clan [".$args[1]."]");
+                             break;
+                         }
+                         if($this->getClan($p) != "none") {
+                             $sp->sendMessage("You are already in Clan [".$this->getClan($p)."]");
+                             break;
+                         }
+                         foreach($this->clanlist as $cl) {
+                             if ($cl == $args[1]) {
+                                 $this->clandata[$args[1]][$p] = "user";
+                                 array_push($this->clandata[$args[1]]["list"], $p);
+                                 $this->playerclan[$p] = $args[1];
+                                 $sp->sendMessage("[PocketClan] Succesfully joined in  " . "\"" . $args[1] . "\"");
+                                 break;
+                             } else $sp->sendMessage("[PocketClan] Can't find Clan");
+                         }
+                         return true;
+                     case "list" :
+                         if(isset($args[1])) {
+                             $list = "";
+                             foreach($this->clandata[$args[1]]["list"] as $cl) $list .= $cl.",";
+                             $sp->sendMessage("[PocketClan] " . $args[1] . " people : " . sizeof($this->clandata[$args[1]]["list"]) . " list : " . $list);
+                         } else {
+                             $list = "";
+                             foreach($this->clanlist as $cl) $list .= $cl.",";
+                             $sp->sendMessage("[PocketClan] " . $list);
+                         }
+                         return true;
+                     case "leave" :
+                         if(isset($args[1])) {
+                             if($this->getClan($p) == $args[1]) {
+                                 $this->clandata[$args[1]][$p]="NotInClan";
+                                 $this->playerclan[$p] = "none";
+                                 unset($this->clandata[$args[1]]["list"][array_search($p,$this->clandata[$args[1]]["list"])]);
+                                 $sp->sendMessage("Succesfully leaved Clan [".$args[1]."]");
+                             } else {
+                                 $sp->sendMessage("[PocketClan] Clan not founded");
+                             }
+                         } else $sp->sendMessage("[PocketClan] Please Input ClanName");
+                     break;
+                     default:
+                         $sp->sendMessage("[PocketClan] Usage: /clan [make/join/leave/list");
+                 }
+                 break;
+             case "clanManage" :
+                 switch($args[0]) {
+                     case "delete" :
+                         if($this->getClan($p) == $args[1] || $sp->isOp()) {
+                             foreach($this->clandata[$args[1]]["list"] as $pl)
+                                 $this->playerclan[$pl] = "none";
+                             unset($this->clanlist[array_search($args[1],$this->clanlist)]);
+                             unset($this->clandata[array_search($args[1],$this->clandata)]);
+                         }
+                         return true;
+                     case "ban" :
+                         return true;
+                     case "admin" :
+                         return true;
+                     default: $sp->sendMessage("[PocketClan] Usage: /clanManage [delete/ban/admin]");
+                 }
+                 break;
+             default :
+                 $sp->sendMessage("[PocketClan] Usage: /clanManage [delete/ban/admin]");
         }
         return true;
     }
