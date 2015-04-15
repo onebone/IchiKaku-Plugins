@@ -125,7 +125,12 @@ class PocketClan extends PluginBase implements Listener {
              case "clanManage" :
                  switch($args[0]) {
                      case "delete" :
-                         if($this->getClan($p) == $args[1] || $sp->isOp()) {
+                         if($this->clandata[$this->getClan($p)][$p] == "admin") {
+                             foreach($this->clandata[$this->getClan($p)]["list"] as $pl)
+                                 $this->playerclan[$pl] = "none";
+                             unset($this->clanlist[array_search($this->getClan($p),$this->clanlist)]);
+                             unset($this->clandata[array_search($this->getClan($p),$this->clandata)]);
+                         } else if($sp->isOP()) {
                              foreach($this->clandata[$args[1]]["list"] as $pl)
                                  $this->playerclan[$pl] = "none";
                              unset($this->clanlist[array_search($args[1],$this->clanlist)]);
@@ -133,6 +138,10 @@ class PocketClan extends PluginBase implements Listener {
                          }
                          return true;
                      case "ban" :
+                         if($this->clandata[$this->getClan($p)][$p] == ("admin"||"op")) {
+                             $this->playerclan[$args[1]] = "none";
+                             unset($this->clandata[$this->getClan($p)]["list"][$args[1]]);
+                         }
                          return true;
                      case "admin" :
                          return true;
