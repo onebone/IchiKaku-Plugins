@@ -25,11 +25,11 @@ class PocketClan extends PluginBase implements Listener {
         if ($this->getServer ()->getPluginManager ()->getPlugin ( "EconomyAPI" ) != null)
             $this->api = EconomyAPI::getInstance ();
         else {
-            $this->getLogger()->error("'EconomyAPI' plugin was not activitied!");
+            $this->getLogger()->error("'EconomyAPI' plugin was not activated!");
             $this->getServer()->getPluginManager()->disablePlugin($this);
         }
         $this->loadData();
-        $this->getLogger()->info(TextFormat::GOLD."[PocketClan] Plugin was activitied");
+        $this->getLogger()->info(TextFormat::GOLD."[PocketClan] Plugin was activated");
     }
     public function onDisable() {
         $this->saveData();
